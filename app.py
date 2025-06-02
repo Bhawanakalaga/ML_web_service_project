@@ -9,7 +9,7 @@ model = joblib.load('model.pkl')
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # serves index.html
+    return render('index.html')  # serves index.html
 
 @app.route('/predict', methods=['POST'])
 def predict():
