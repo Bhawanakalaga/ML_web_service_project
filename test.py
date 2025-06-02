@@ -1,8 +1,11 @@
-# test.py
 import requests
+import json
 
 url = 'http://127.0.0.1:5000/predict'
-data = {'features': [5.1, 3.5, 1.4, 0.2]}  
+data = {'features': [5.1, 3.5, 1.4, 0.2]}
 
 response = requests.post(url, json=data)
-print(response.json())
+
+print("API Response:")
+print(json.dumps(response.json(), indent=2))
+
