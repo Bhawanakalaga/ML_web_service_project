@@ -2,137 +2,49 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Iris Flower Prediction 🌸 </title>
-    <style>
-        :root {
-            --bg-color: #f0f4f8;
-            --text-color: #333;
-            --card-bg: #fff;
-            --button-bg: #4CAF50;
-            --button-hover: #45a049;
-        }
-
-        body.dark-mode {
-            --bg-color: #1e1e1e;
-            --text-color: #f5f5f5;
-            --card-bg: #2c2c2c;
-            --button-bg: #03a96f;
-            --button-hover: #029c64;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg-color);
-            color: var(--text-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            transition: all 0.4s ease;
-        }
-
-        .container {
-            background: var(--card-bg);
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            width: 380px;
-            text-align: center;
-        }
-
-        h2 {
-            margin-bottom: 20px;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: 500;
-        }
-
-        input[type="number"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            font-size: 16px;
-            background-color: var(--card-bg);
-            color: var(--text-color);
-        }
-
-        button {
-            margin-top: 25px;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 6px;
-            background-color: var(--button-bg);
-            color: white;
-            font-size: 16px;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-
-        button:hover {
-            background-color: var(--button-hover);
-        }
-
-        #result {
-            margin-top: 20px;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .toggle-dark {
-            position: absolute;
-            top: 20px;
-            right: 20px;
-            cursor: pointer;
-            font-size: 16px;
-            background: none;
-            border: 1px solid var(--text-color);
-            border-radius: 20px;
-            padding: 6px 14px;
-            color: var(--text-color);
-        }
-
-        #feature-importance {
-            margin-top: 20px;
-            text-align: left;
-            font-size: 14px;
-        }
-    </style>
+    <title>Iris Flower Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <button class="toggle-dark" onclick="toggleDarkMode()">🌙 Toggle Dark Mode</button>
-
     <div class="container">
-        <h2>Iris Flower Classifier 🌸</h2>
+        <h2>Iris Flower Classifier</h2>
+        <button id="themeToggle">Toggle Dark Mode</button>
         <form id="predictForm">
-            <label>Sepal Length (cm):</label>
-            <input type="number" step="any" id="sepal_length" required>
-
-            <label>Sepal Width (cm):</label>
-            <input type="number" step="any" id="sepal_width" required>
-
-            <label>Petal Length (cm):</label>
-            <input type="number" step="any" id="petal_length" required>
-
-            <label>Petal Width (cm):</label>
-            <input type="number" step="any" id="petal_width" required>
-
+            <label>Sepal Length:</label>
+            <input type="number" step="any" id="sepal_length" required><br><br>
+            
+            <label>Sepal Width:</label>
+            <input type="number" step="any" id="sepal_width" required><br><br>
+            
+            <label>Petal Length:</label>
+            <input type="number" step="any" id="petal_length" required><br><br>
+            
+            <label>Petal Width:</label>
+            <input type="number" step="any" id="petal_width" required><br><br>
+            
             <button type="submit">Predict</button>
         </form>
 
         <h3 id="result"></h3>
-        <div id="confidence"></div>
-        <div id="feature-importance"></div>
+
+        <div class="feature-importance">
+            <h3>Feature Importances</h3>
+            <ul>
+                <li>Sepal Length: {{ feature_importances[0]|round(3) }}</li>
+                <li>Sepal Width: {{ feature_importances[1]|round(3) }}</li>
+                <li>Petal Length: {{ feature_importances[2]|round(3) }}</li>
+                <li>Petal Width: {{ feature_importances[3]|round(3) }}</li>
+            </ul>
+        </div>
     </div>
 
     <script>
-        const classLabels = ["Setosa", "Versicolor", "Virginica"];
+        // Dark mode toggle
+        document.getElementById('themeToggle').addEventListener('click', function() {
+            document.body.classList.toggle('dark-mode');
+        });
 
+        // Prediction form submission
         document.getElementById('predictForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -150,26 +62,16 @@
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('result').innerText = "Prediction: " + classLabels[data.prediction];
-                document.getElementById('confidence').innerText = "Confidence: " + data.confidence + "%";
-
-                let importanceHtml = "<strong>Feature Importances:</strong><ul>";
-                const names = ["Sepal Length", "Sepal Width", "Petal Length", "Petal Width"];
-                data.feature_importances.forEach((val, i) => {
-                    importanceHtml += `<li>${names[i]}: ${(val * 100).toFixed(2)}%</li>`;
-                });
-                importanceHtml += "</ul>";
-                document.getElementById('feature-importance').innerHTML = importanceHtml;
+                const classes = ["Setosa", "Versicolor", "Virginica"];
+                document.getElementById('result').innerText = 
+                    `Prediction: ${classes[data.prediction]} (Confidence: ${data.confidence}%)`;
             })
             .catch(error => {
                 document.getElementById('result').innerText = "Error: " + error;
             });
         });
-
-        function toggleDarkMode() {
-            document.body.classList.toggle("dark-mode");
-        }
     </script>
 </body>
 </html>
+
 
