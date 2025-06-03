@@ -5,12 +5,13 @@ import os
 
 app = Flask(__name__)
 
-# Load model only
+# Load model and feature importances
 model = joblib.load('model.pkl')
+feature_importances = joblib.load('feature_importances.pkl')
 
 @app.route('/')
 def home():
-    return render_template('index.html')  # Removed feature_importances
+    return render_template('index.html', feature_importances=feature_importances.tolist())
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -24,6 +25,7 @@ def predict():
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
+
 
 
 
