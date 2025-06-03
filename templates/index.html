@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iris Flower Prediction</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
@@ -68,8 +67,7 @@
                     `Prediction: ${classes[data.prediction]} (Confidence: ${data.confidence}%)`;
             })
             .catch(error => {
-                console.error('Prediction error:', error);
-                document.getElementById('result').innerText = "Server error. Please try again later.";
+                document.getElementById('result').innerText = "Error: " + error;
             });
         });
     </script>
