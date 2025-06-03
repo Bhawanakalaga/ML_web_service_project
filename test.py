@@ -6,3 +6,4 @@ data = {'features': [5.1, 3.5, 1.4, 0.2]}  # Example input
 response = requests.post(url, json=data)
 print(response.json())
 
+
