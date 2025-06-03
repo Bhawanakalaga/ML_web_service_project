@@ -1,50 +1,63 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
     <title>Iris Flower Prediction</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f4f4f4;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            margin: auto;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+        }
+        label, input, button {
+            display: block;
+            width: 100%;
+            margin-bottom: 15px;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            border: none;
+            cursor: pointer;
+        }
+        h2, h3 {
+            text-align: center;
+        }
+        #result {
+            color: blue;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Iris Flower Classifier</h2>
-        <button id="themeToggle">Toggle Dark Mode</button>
-        <form id="predictForm">
-            <label>Sepal Length:</label>
-            <input type="number" step="any" id="sepal_length" required><br><br>
-            
-            <label>Sepal Width:</label>
-            <input type="number" step="any" id="sepal_width" required><br><br>
-            
-            <label>Petal Length:</label>
-            <input type="number" step="any" id="petal_length" required><br><br>
-            
-            <label>Petal Width:</label>
-            <input type="number" step="any" id="petal_width" required><br><br>
-            
-            <button type="submit">Predict</button>
-        </form>
+    <h2>Iris Flower Classifier</h2>
+    <form id="predictForm">
+        <label>Sepal Length:</label>
+        <input type="number" step="any" id="sepal_length" required>
 
-        <h3 id="result"></h3>
+        <label>Sepal Width:</label>
+        <input type="number" step="any" id="sepal_width" required>
 
-        <div class="feature-importance">
-            <h3>Feature Importances</h3>
-            <ul>
-                <li>Sepal Length: {{ feature_importances[0]|round(3) }}</li>
-                <li>Sepal Width: {{ feature_importances[1]|round(3) }}</li>
-                <li>Petal Length: {{ feature_importances[2]|round(3) }}</li>
-                <li>Petal Width: {{ feature_importances[3]|round(3) }}</li>
-            </ul>
-        </div>
-    </div>
+        <label>Petal Length:</label>
+        <input type="number" step="any" id="petal_length" required>
+
+        <label>Petal Width:</label>
+        <input type="number" step="any" id="petal_width" required>
+
+        <button type="submit">Predict</button>
+    </form>
+
+    <h3 id="result"></h3>
 
     <script>
-        // Dark mode toggle
-        document.getElementById('themeToggle').addEventListener('click', function() {
-            document.body.classList.toggle('dark-mode');
-        });
-
-        // Prediction form submission
         document.getElementById('predictForm').addEventListener('submit', function(e) {
             e.preventDefault();
 
@@ -63,8 +76,9 @@
             .then(response => response.json())
             .then(data => {
                 const classes = ["Setosa", "Versicolor", "Virginica"];
-                document.getElementById('result').innerText = 
-                    `Prediction: ${classes[data.prediction]} (Confidence: ${data.confidence}%)`;
+                document.getElementById('result').innerText = data.prediction !== undefined
+                    ? "Prediction: " + classes[data.prediction]
+                    : "Error: " + data.error;
             })
             .catch(error => {
                 document.getElementById('result').innerText = "Error: " + error;
