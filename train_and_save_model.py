@@ -28,6 +28,3 @@ joblib.dump(model.feature_importances_, 'feature_importances.pkl')
 print("Model and feature importances saved successfully.")
 
 
-
-
-
