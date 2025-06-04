@@ -5,6 +5,7 @@ import os
 
 app = Flask(__name__)
 
+# Load model
 try:
     model = joblib.load('model.pkl')
 except Exception as e:
